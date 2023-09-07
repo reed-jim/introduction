@@ -10,10 +10,10 @@ const theme = createTheme({
             onBackgroundText: '#6b0000'
         },
         secondary: {
-            light: '#ff7961',
+            light: '#ffed91',
             main: '#f44336',
             dark: '#ba000d',
-            contrastText: '#000',
+            contrastText: '#2b0000',
         },
     },
     typography: {
