@@ -12,6 +12,7 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import Chip from '@mui/material/Chip';
+import Divider from '@mui/material/Divider';
 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -19,13 +20,17 @@ import ListItem from '@mui/material/ListItem';
 import Link from '@mui/material/Link';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
+import HomeIcon from '@mui/icons-material/Home';
 
 import theme from './Theme/Theme';
+
+import { useState } from 'react';
 
 import officeImage from "./images/office2.png"
 import coderImage from "./images/coder.png"
@@ -79,6 +84,13 @@ const imageData = [
     },
 ]
 
+const summaryContent = [
+    "Solo game developer with roughly 3 years in experience. Producing 4 mobile games in total throughout my career",
+    "Always dreaming of making a trending game with millions of download that create huge profit for the company",
+    "Prioritizing hard-working, enthusiasm and discipline on work",
+    "Capable of working more than 12 hours a day"
+]
+
 const skills = [
     "Farmiliar with Unity Editor Software",
     "C# Programming to write Scripts",
@@ -100,7 +112,7 @@ const games = [
     {
         time: "1/2021 - 7/2021",
         name: "Merge Special - Block Puzzle Game",
-        description: "Hyper casual restaurant management game",
+        description: "New interesting way to play 2048 game",
         link: "https://play.google.com/store/apps/details?id=com.WillingsGame.Shooting",
         images: [mergeSpecial0, mergeSpecial1, mergeSpecial2]
     },
@@ -125,47 +137,42 @@ const games = [
     }
 ]
 
-const GameList = (props) => {
+const GameList = (isDesktop, zoomImage) => {
     const list = []
 
     for (let i = 0; i < games.length; i++) {
         list.push(
-            <TimelineItem>
-                <TimelineSeparator>
-                    <TimelineDot color={'warning'} />
-                    <TimelineConnector sx={{ backgroundColor: '#ffb67a' }} />
-                </TimelineSeparator>
+            <Stack
+                key={games[i].name}
+                bgcolor={theme.palette.primary.light}
+                padding={6}
+                borderRadius={"16px"}
+                flexGrow={1}
+            >
+                <Typography variant='h5' color={theme.palette.primary.onBackgroundText}>
+                    {games[i].time}
+                </Typography>
 
-                <TimelineContent>
+                <Stack direction={"row"} display={"flex"} alignItems={"center"} marginTop={"56px"}>
+                    <Stack direction={"row"} spacing={1} sx={{ flexGrow: 1 }}>
 
-                    <Stack bgcolor={theme.palette.primary.light}
-                        padding={2}
-                        borderRadius={i % 2 == 0 ? "0 16px 16px 0" : "16px 0 0 16px"}
-                        marginLeft={i % 2 == 0 ? "-32px" : "0px"}
-                        marginRight={i % 2 != 0 ? "-32px" : "0px"}
-                    >
-                        <Typography variant='h5' color={theme.palette.primary.onBackgroundText}>
-                            {games[i].time}
+                        {
+                            i == 3 ?
+                                <Chip label="New" color="success" /> : ""
+                        }
+                        <Typography variant='h5' color={theme.palette.primary.onBackgroundText}
+                            fontWeight={"bold"}
+                        >
+                            {games[i].name}
                         </Typography>
 
-                        <Stack direction={"row"} display={"flex"} alignItems={"center"} marginTop={"56px"}>
-                            <Stack direction={"row"} spacing={1} sx={{ flexGrow: 1 }}>
 
-                                {
-                                    i == 3 ?
-                                    <Chip label="New" color="success" /> : ""
-                                }
-                                <Typography variant='h5' color={theme.palette.primary.onBackgroundText}
-                                    align='justify' fontWeight={"bold"}
-                                >
-                                    {games[i].name}
-                                </Typography>
-                                
-                                
-                            </Stack >
+                    </Stack >
 
+                    {
+                        isDesktop && i == 3 ?
                             <Button variant="contained" color="success"
-                                 href={games[i].link} target="_blank"
+                                href={games[i].link} target="_blank"
                             >
                                 <Stack direction="row" display={"flex"} alignItems={"center"}>
                                     {/* <PlayArrowIcon></PlayArrowIcon> */}
@@ -174,14 +181,36 @@ const GameList = (props) => {
                                     </Typography>
                                 </Stack>
                             </Button>
+                            :
+                            <></>
+                    }
+                </Stack>
 
+                {
+                    !isDesktop && i == 3 ?
+                        <Stack direction={"row"} display={"flex"}>
+                            <Stack flexGrow={1} />
+
+                            <Button variant="contained" color="success"
+                                href={games[i].link} target="_blank"
+                            >
+                                <Stack direction="row" display={"flex"} alignItems={"center"}>
+                                    {/* <PlayArrowIcon></PlayArrowIcon> */}
+                                    <Typography color={"white"}>
+                                        Play Now
+                                    </Typography>
+                                </Stack>
+                            </Button>
                         </Stack>
+                        :
+                        <></>
+                }
 
-                        <Typography color={theme.palette.primary.onBackgroundText} align='justify'>
-                            {games[i].description}
-                        </Typography>
+                <Typography color={theme.palette.primary.onBackgroundText} align='justify'>
+                    {games[i].description}
+                </Typography>
 
-                        {/* <Stack direction={"row"} spacing={1}
+                {/* <Stack direction={"row"} spacing={1}
                             display={"flex"} alignItems={"center"}
                         >
                             <DownloadIcon></DownloadIcon>
@@ -192,22 +221,32 @@ const GameList = (props) => {
                             </Link>
                         </Stack> */}
 
-                        <ImageList variant="masonry" cols={3} gap={8} sx={{ marginTop: "32px" }}>
-                            {games[i].images.map((item) => (
-                                <ImageListItem key={item}>
-                                    <img
-                                        src={`${item}?w=164&h=164&fit=crop&auto=format`}
+                <ImageList variant="masonry" cols={3} gap={36} sx={{ marginTop: "32px" }}>
+                    {games[i].images.map((item) => (
+                        <ImageListItem key={item}>
+                            <img
+                                src={`${item}?w=164&h=164&fit=crop&auto=format`}
+                                loading="lazy"
+                                onClick={() => zoomImage(item)}
+                            />
+                        </ImageListItem>
+                    ))}
+                </ImageList>
+            </Stack>
 
-                                        loading="lazy"
-                                        style={{ borderRadius: "4px" }}
-                                    />
-                                </ImageListItem>
-                            ))}
-                        </ImageList>
-                    </Stack>
 
-                </TimelineContent>
-            </TimelineItem>
+            // <TimelineItem>
+            //     <TimelineSeparator>
+            //         <TimelineDot color={'warning'} />
+            //         <TimelineConnector sx={{ backgroundColor: '#ffb67a' }} />
+            //     </TimelineSeparator>
+
+            //     <TimelineContent>
+
+
+
+            //     </TimelineContent>
+            // </TimelineItem>
 
         );
     }
@@ -215,24 +254,111 @@ const GameList = (props) => {
     return list;
 };
 
+const Summary = (showInDesktop = true, isDesktop) => {
+    var condition = false
+
+    if (showInDesktop && isDesktop) {
+        condition = true
+    }
+    if (!showInDesktop && !isDesktop) {
+        condition = true
+    }
+
+    if (showInDesktop) {
+        return condition ?
+            <Grid sm={12} md={9} paddingLeft={isDesktop ? "36px" : 0} marginTop={isDesktop ? "120px" : 0}
+                display={"flex"} alignItems={"center"}
+            >
+                <Typography variant='h6' color={theme.palette.primary.onBackgroundText} textAlign={"justify"}>
+                    Solo game developer with roughly 3 years in experience.
+                    Producing 4 mobile games in total throughout my career.
+                    Most of them reached thousands of downloads on Google Play.
+                    Always dreaming of making a trending game with millions of download that create huge profit for the company.
+                    Prioritizing hard-working, enthusiasm and discipline on work.
+                    Capable of working more than 12 hours a day.
+                </Typography>
+            </Grid>
+            :
+            <></>
+    }
+    else {
+        return condition ?
+            summaryContent.map(
+                item =>
+                    <List
+                        key={item}
+                        disablePadding sx={{ listStyleType: "disc", pl: 2 }}>
+                        <ListItem sx={{ display: 'list-item' }}>
+                            <Typography>
+                                {item}
+                            </Typography>
+                        </ListItem>
+                    </List>
+            )
+            :
+            <></>
+    }
+}
+
 export default function BoxComponent() {
+    const Desktop = useMediaQuery('(min-width:1200px)');
+    const Ipad = useMediaQuery('(min-width:1000px)');
+    const Mobile = useMediaQuery('(min-width:800px)');
+
+    const [isShowImage, setIsShowImage] = useState(false);
+    const [imgSrc, setImgSrc] = useState("");
+
+    const zoomImage = (src) => {
+        // setImgSrc(src)
+        // setIsShowImage(true)
+    }
+
     return (
         <ThemeProvider theme={theme}>
-            <Grid container
-                style={{ background: "linear-gradient(0deg, rgb(255 233 201), rgb(255 238 187))" }}
+            <Grid container padding="0 24px 24px 24px"
+            // style={{ background: "linear-gradient(0deg, rgb(255 233 201), rgb(255 238 187))" }}
             >
-                <Grid container height={window.innerHeight} padding="64px 0 64px 0">
+                <Grid container height={window.innerHeight} padding={"24px 0 24px 0"}>
+                    {/* Zoomed Image */}
+                    {
+                        isShowImage ?
+                            <Stack position={"fixed"} zIndex={1} top={0} left={0}
+                             bgcolor={"#00000080"} padding={"16px"}
+                                width={"100%"} height={"100%"} display={"flex"} alignItems={"center"} justifyContent={"center"}
+                            >
+                                <Button position="absolute"
+                                    sx={{
+                                        top:"20px",
+                                        right: "-20px"}}
+                                >
+                                    Close
+                                </Button>
+
+                                <img
+                                    src={`${imgSrc}?w=164&h=164&fit=crop&auto=format`}
+                                    loading="lazy"
+                                    style={{
+                                        width: "30%",
+                                        // maxHeight: "1000px"
+                                    }}
+                                />
+                            </Stack>
+                            :
+                            <></>
+                    }
+
                     {/* Name */}
-                    <Grid xs={6}>
+                    <Grid xs={0} sm={0} md={6}>
 
                     </Grid>
 
-                    <Grid xs={6} bgcolor={theme.palette.primary.light} color={theme.palette.primary.contrastText}
+                    <Grid xs={12} sm={12} md={6} bgcolor={theme.palette.primary.light} color={theme.palette.primary.contrastText}
                         padding={4}
+                        maxHeight={"300px"}
                         borderRadius={"16px 0 0 16px"}
                         display={"flex"} alignItems={"center"}
                     >
-                        <Stack spacing={1}>
+                        <Stack spacing={1} sx={{ flexGrow: 1 }}>
                             <Typography variant='h4'>
                                 NGUYEN KHANG NINH
                             </Typography>
@@ -241,54 +367,50 @@ export default function BoxComponent() {
                                 Game Developer
                             </Typography>
                         </Stack>
+
+
                     </Grid>
 
                     {/* Summary */}
-                    <Grid xs={3} bgcolor={theme.palette.primary.light}
+                    <Grid xs={12} sm={12} md={3} bgcolor={Desktop ? theme.palette.primary.light : ""}
                         borderRadius={"0 16px 16px 0"}
-                        marginTop={"120px"}
+                        marginTop={Desktop ? "120px" : ""}
                         display="flex" justifyContent="center" alignItems="center"
                     >
                         <Box
                             component="img"
                             sx={{
                                 maxHeight: { xs: 400, md: 400 },
-                                maxWidth: { xs: 350, md: 350 },
-                                marginTop: "-280px",
-                                filter: "sepia(1)"
+                                maxWidth: { xs: 300, md: 300 },
+                                filter: "grayscale(0.7)",
                             }}
+                            marginTop={Desktop ? "-300px" : "-400px"}
                             src={officeImage}
                         />
                     </Grid>
 
-                    <Grid xs={9} padding={"48px"} marginTop={"120px"}>
-                        <Typography variant='h6' color={theme.palette.primary.onBackgroundText} textAlign={"justify"}>
-                            Solo game developer with roughly 3 years in experience.
-                            Producing 5 mobile games in total throughout my career.
-                            Most of them reached thousands of downloads on Google Play.
-                            Always dreaming of making a trending game with millions of download that create huge profit for the company.
-                            Prioritizing hard-working, enthusiasm and discipline on work.
-                            Capable of working more than 12 hours a day since developing games is passion.
-                        </Typography>
-                    </Grid>
+                    {Summary(true, Desktop)}
                 </Grid>
+
+                {Summary(false, Desktop)}
 
                 {/* Skills */}
                 <Grid container marginTop={"160px"}>
-                    <Grid xs={6} display={"flex"} alignItems={"center"} justifyContent={"center"}>
+                    <Grid xs={12} sm={12} md={6} display={"flex"} alignItems={"center"} justifyContent={"center"}>
                         <Box
                             component="img"
                             sx={{
                                 maxHeight: { xs: 300, md: 300 },
                                 maxWidth: { xs: 300, md: 300 },
-                                filter: "sepia(1)"
+                                filter: "grayscale(0.7)"
                             }}
                             src={coderImage}
                         />
                     </Grid>
 
-                    <Grid xs={6} bgcolor={theme.palette.secondary.light} color={theme.palette.secondary.contrastText}
+                    <Grid xs={12} sm={12} md={6} bgcolor={theme.palette.secondary.light} color={theme.palette.secondary.contrastText}
                         padding={4}
+                        marginTop={!Desktop ? "160px" : 0}
                         borderRadius={"16px 0 0 16px"}
                         display={"flex"} alignItems={"center"}
                     >
@@ -300,7 +422,9 @@ export default function BoxComponent() {
                             {
                                 skills.map(
                                     item =>
-                                        <List disablePadding sx={{ listStyleType: "disc", pl: 2 }}>
+                                        <List
+                                            key={item}
+                                            disablePadding sx={{ listStyleType: "disc", pl: 2 }}>
                                             <ListItem sx={{ display: 'list-item' }}>
                                                 <Typography>
                                                     {item}
@@ -314,127 +438,62 @@ export default function BoxComponent() {
                 </Grid>
 
                 {/* Projects */}
-                <Grid xs={12} marginTop={"160px"}>
-                    <Typography variant='h4' color={theme.palette.primary.onBackgroundText} textAlign={"center"}>
+                <Stack width={"100%"} marginTop={"160px"} display={"flex"} spacing={3}>
+                    <Typography variant='h4' color={theme.palette.primary.onBackgroundText} textAlign={"center"}
+                        marginBottom={"36px"}
+                    >
                         PROJECTS
                     </Typography>
-                </Grid>
 
-                <Timeline position="alternate-reverse">
+                    {GameList(Desktop, zoomImage)}
+                </Stack>
 
+
+                {/* <Timeline position="alternate-reverse">
                     {GameList()}
-                    {/* <TimelineItem>
-                        <TimelineSeparator>
-                            <TimelineDot color={'warning'} />
-                            <TimelineConnector sx={{ backgroundColor: '#ffb67a' }} />
-                        </TimelineSeparator>
-                        <TimelineContent>
-                            <Stack bgcolor={theme.palette.primary.light}
-                                padding={4}
-                                borderRadius={"16px 0 0 16px"}
-                                marginLeft={"-32px"}
-                            >
-                                <Typography variant='h5' color={theme.palette.primary.onBackgroundText}>
-                                    Blastbattle : Bubble Shooter Game (3/2020 - 11/2020)
-                                </Typography>
-
-                                <Typography color={theme.palette.primary.onBackgroundText}>
-                                    100+ levels bubble shooter game
-                                </Typography>
-
-                                <Link href="https://play.google.com/store/apps/details?id=com.WillingGames.BubbleShooter">
-                                    https://play.google.com/store/apps/details?id=com.WillingGames.BubbleShooter</Link>
-
-                                <ImageList variant="masonry" cols={3} gap={8} sx={{ marginTop: "32px" }}>
-                                    {imageData.map((item) => (
-                                        <ImageListItem key={item.img}>
-                                            <img
-                                                src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                                                srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                                alt={item.title}
-                                                loading="lazy"
-                                                style={{ borderRadius: "4px" }}
-                                            />
-                                        </ImageListItem>
-                                    ))}
-                                </ImageList>
-                            </Stack>
-                        </TimelineContent>
-                    </TimelineItem>
-
-                    <TimelineItem>
-                        <TimelineSeparator>
-                            <TimelineDot color={'warning'} />
-                        </TimelineSeparator>
-                        <TimelineContent>
-
-                            <Stack bgcolor={theme.palette.primary.light}
-                                padding={4}
-                                borderRadius={"16px 0 0 16px"}
-                                marginRight={"-32px"}
-                            >
-                                <Typography variant='h5' color={theme.palette.primary.onBackgroundText}>
-                                    Food Please!
-                                </Typography>
-
-                                <Typography color={theme.palette.primary.onBackgroundText}>
-                                    Hyper casual restaurant management game
-                                </Typography>
-
-                                <Link href="#">https://play.google.com/store/apps/details?id=com.instagram.android&hl=en-VN</Link>
-
-                                <ImageList variant="masonry" cols={3} gap={8}>
-                                    {imageData.map((item) => (
-                                        <ImageListItem key={item.img} sx={{ marginTop: "32px" }}>
-                                            <img
-                                                src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                                                srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                                alt={item.title}
-                                                loading="lazy"
-                                                style={{ borderRadius: "4px" }}
-                                            />
-                                        </ImageListItem>
-                                    ))}
-                                </ImageList>
-                            </Stack>
-
-                        </TimelineContent>
-                    </TimelineItem> */}
-                </Timeline>
+                </Timeline> */}
 
                 {/* CONTACT */}
-                <Grid container bgcolor={theme.palette.primary.light} padding={2} marginTop={"500px"}>
-                    <Grid xs={12}>
-                        <Typography variant='h5' textAlign={"left"}>
+                <Stack direction={"row"} bgcolor={theme.palette.primary.light} marginTop={"160px"} width={"100%"}
+
+                >
+                    <Box bgcolor={theme.palette.primary.onBackgroundText} width={"20px"} height={"100%"} />
+
+                    <Stack bgcolor={theme.palette.primary.light} spacing={2} padding={2} width={"100%"}>
+
+                        <Typography variant='h4' textAlign={"left"}>
                             Contact
                         </Typography>
-                    </Grid>
 
+                        <Divider color="#aaa" />
 
-                    <Grid xs={4}>
+                        <Stack direction={"row"} display={"flex"} justifyContent={"end"} width={"100%"}>
+                            <Stack spacing={1}>
+                                <Stack direction="row" spacing={1}>
+                                    <EmailIcon></EmailIcon>
+                                    <Typography>
+                                        nocoop527@gmail.com
+                                    </Typography>
+                                </Stack>
 
-                    </Grid>
+                                <Stack direction="row" spacing={1}>
+                                    <PhoneIcon></PhoneIcon>
+                                    <Typography>
+                                        0343509190
+                                    </Typography>
+                                </Stack>
 
-                    <Grid xs={8}>
-                        <Stack>
-                            <Stack direction="row" spacing={1}>
-                                <EmailIcon></EmailIcon>
-                                <Typography>
-                                    nocoop527@gmail.com
-                                </Typography>
+                                <Stack direction="row" spacing={1}>
+                                    <HomeIcon></HomeIcon>
+                                    <Typography>
+                                        Ward 12, Go Vap, Ho Chi Minh City
+                                    </Typography>
+                                </Stack>
                             </Stack>
-
-                            <Stack direction="row" spacing={1}>
-                                <PhoneIcon></PhoneIcon>
-                                <Typography>
-                                    0343509190
-                                </Typography>
-                            </Stack>
-
                         </Stack>
-                    </Grid>
-                </Grid>
+                    </Stack>
+                </Stack>
             </Grid>
         </ThemeProvider>
-    );
+    )
 }
